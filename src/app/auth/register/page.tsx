@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Public_Sans } from "next/font/google";
 
 const font = Public_Sans({
@@ -44,6 +44,7 @@ const strengthColor = [
 ];
 
 export default function RegisterPage() {
+  const [year, setYear] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("student");
@@ -53,6 +54,10 @@ export default function RegisterPage() {
   const [agree, setAgree] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
 
   const score = useMemo(() => scorePassword(password), [password]);
 
@@ -150,7 +155,7 @@ export default function RegisterPage() {
         </div>
 
         <p className="text-sm text-white/50">
-            © {new Date().getFullYear()} Learnly. All rights reserved.
+          © {year ?? ""} Learnly. All rights reserved.
         </p>
       </section>
 

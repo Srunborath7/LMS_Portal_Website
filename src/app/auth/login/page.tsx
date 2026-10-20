@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Public_Sans } from "next/font/google";
 
 const font = Public_Sans({
@@ -15,12 +15,17 @@ const courses = [
 ];
 
 export default function LoginPage() {
+  const [year, setYear] = useState<number | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -110,7 +115,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-sm text-white/50">
-          © {new Date().getFullYear()} Learnly. All rights reserved.
+          © {year ?? ""} Learnly. All rights reserved.
         </p>
       </section>
 
@@ -282,6 +287,16 @@ export default function LoginPage() {
               {loading ? "Signing in" : "Sign in"}
             </button>
           </form>
+
+          <p className="mt-8 text-center text-sm text-slate-500">
+            New to Learnly?{" "}
+            <a
+              href="/auth/register"
+              className="font-semibold text-[#1E2A5A] hover:underline"
+            >
+              Create an account
+            </a>
+          </p>
         </div>
       </section>
     </main>
