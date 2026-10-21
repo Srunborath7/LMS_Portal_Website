@@ -77,6 +77,7 @@ export const en = {
   // Sidebar navigation
   nav: {
     dashboard: 'Dashboard',
+    students: 'Students',
     myCourses: 'My Courses',
     assignments: 'Assignments',
     grades: 'Grades',
