@@ -1,14 +1,14 @@
-import { httpClient } from '@/src/services/http/client';
-import { clearSession, getRefreshToken, saveSession } from '@/src/lib/session';
-import type { AuthCreate, AuthLogin, AuthRead, AuthToken } from './type';
+import { httpClient } from "@/src/services/http/client";
+import { clearSession, getRefreshToken, saveSession } from "@/src/lib/session";
+import type { AuthCreate, AuthLogin, AuthRead, AuthToken } from "./type";
 
-const AUTH_PATH = '/auth';
+const AUTH_PATH = "/auths";
 
 function storeSession(session: AuthToken): void {
   // The backend schema currently guarantees the access token only. Keep an
   // existing refresh token if login/refresh responses omit it.
   const refreshToken = session.refresh_token ?? getRefreshToken();
-  saveSession(session.access_token, refreshToken ?? '');
+  saveSession(session.access_token, refreshToken ?? "");
 }
 
 export const authApi = {
@@ -17,7 +17,10 @@ export const authApi = {
   },
 
   async login(payload: AuthLogin): Promise<AuthToken> {
-    const session = await httpClient.post<AuthToken>(`${AUTH_PATH}/login`, payload);
+    const session = await httpClient.post<AuthToken>(
+      `${AUTH_PATH}/login`,
+      payload,
+    );
     storeSession(session);
     return session;
   },
