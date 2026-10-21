@@ -127,6 +127,10 @@ textarea::placeholder {
   opacity: 1;
 }
 
+.student-table-rows > tr + tr {
+  border-top: 1px solid var(--border-default);
+}
+
 [data-theme="dark"] input:-webkit-autofill,
 [data-theme="dark"] input:-webkit-autofill:hover,
 [data-theme="dark"] input:-webkit-autofill:focus,
