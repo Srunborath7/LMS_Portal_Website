@@ -80,6 +80,7 @@ export const km: Translations = {
   nav: {
     dashboard: 'ផ្ទាំងគ្រប់គ្រង',
     students: 'សិស្ស',
+    teachers: 'គ្រូបង្រៀន',
     myCourses: 'វគ្គសិក្សារបស់ខ្ញុំ',
     assignments: 'កិច្ចការ',
     grades: 'ពិន្ទុ',

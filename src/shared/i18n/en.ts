@@ -78,6 +78,7 @@ export const en = {
   nav: {
     dashboard: 'Dashboard',
     students: 'Students',
+    teachers: 'Teachers',
     myCourses: 'My Courses',
     assignments: 'Assignments',
     grades: 'Grades',

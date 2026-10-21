@@ -1,15 +1,56 @@
 import { ApiError } from '@/src/types/api.types';
 import { logger } from '@/src/lib/logger';
-import { getAccessToken } from '@/src/lib/session';
+import {
+  clearSession,
+  getAccessToken,
+  getRefreshToken,
+  saveSession,
+} from '@/src/lib/session';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
+const AUTH_REFRESH_PATH = '/auths/refresh';
+
+type RefreshResponse = {
+  access_token?: string;
+  refresh_token?: string;
+};
+
+let refreshInFlight: Promise<string | null> | null = null;
+
+function refreshAccessToken(): Promise<string | null> {
+  if (refreshInFlight) return refreshInFlight;
+
+  refreshInFlight = (async () => {
+    try {
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) return null;
+
+      const response = await fetch(`${BASE_URL}${AUTH_REFRESH_PATH}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      });
+      if (!response.ok) return null;
+
+      const session = (await response.json()) as RefreshResponse;
+      if (!session.access_token) return null;
+
+      saveSession(session.access_token, session.refresh_token ?? refreshToken);
+      return session.access_token;
+    } catch {
+      return null;
+    } finally {
+      refreshInFlight = null;
+    }
+  })();
+
+  return refreshInFlight;
+}
 
 async function request<T>(method: string, path: string, options?: RequestInit): Promise<T> {
   const url = `${BASE_URL}${path}`;
 
-  const token = getAccessToken();
-
-  const response = await fetch(url, {
+  const fetchWithToken = (token: string | null) => fetch(url, {
     method,
     headers: {
       'Content-Type': 'application/json',
@@ -18,6 +59,19 @@ async function request<T>(method: string, path: string, options?: RequestInit): 
     },
     ...options,
   });
+
+  let response = await fetchWithToken(getAccessToken());
+  const shouldSkipRefresh = ['/auths/login', '/auths/register', AUTH_REFRESH_PATH, '/auths/logout']
+    .some((authPath) => path === authPath || path.startsWith(`${authPath}?`));
+  if (response.status === 401 && !shouldSkipRefresh) {
+    const refreshedToken = await refreshAccessToken();
+    if (refreshedToken) {
+      response = await fetchWithToken(refreshedToken);
+      if (response.status === 401) clearSession();
+    } else {
+      clearSession();
+    }
+  }
 
   if (!response.ok) {
     // The auth service returns `{ code, msg, data }`; other backends may use
