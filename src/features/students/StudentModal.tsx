@@ -8,6 +8,7 @@ import type {
   StudentStatus,
   StudentUpdate,
 } from '@/src/services/students/students.types';
+import { isValidPhone, toE164, toLocalDisplay } from '@/src/shared/utils/phone';
 import { Spinner } from '@/src/components/ui/Spinner';
 
 interface StudentModalProps {
@@ -16,8 +17,6 @@ interface StudentModalProps {
   onSave: (data: StudentCreate | StudentUpdate) => Promise<void>;
   student?: StudentOut | null;
 }
-
-const E164_REGEX = /^\+[1-9]\d{7,14}$/;
 
 export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalProps) {
   const isEdit = Boolean(student);
@@ -47,12 +46,12 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
       setFirstName(student.first_name || '');
       setLastName(student.last_name || '');
       setEmail(student.email || '');
-      setPhone(student.phone || '');
+      setPhone(toLocalDisplay(student.phone));
       setGender(student.gender || '');
       setDob(student.date_of_birth ? student.date_of_birth.substring(0, 10) : '');
       setAddress(student.address || '');
       setGuardianName(student.guardian_name || '');
-      setGuardianPhone(student.guardian_phone || '');
+      setGuardianPhone(toLocalDisplay(student.guardian_phone));
       setStatus(student.status || 'active');
       setEnrolledAt(student.enrolled_at ? student.enrolled_at.substring(0, 10) : '');
       setNote(student.note || '');
@@ -88,16 +87,14 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
     }
 
     if (phone.trim()) {
-      const cleanPhone = phone.replace(/[\s\-().]/g, '');
-      if (!E164_REGEX.test(cleanPhone)) {
-        return 'Phone must be in international format (e.g. +85512345678).';
+      if (!isValidPhone(phone)) {
+        return 'Enter a valid phone number, e.g. 097 424 2347 or +855 97 424 2347.';
       }
     }
 
     if (guardianPhone.trim()) {
-      const cleanGuardianPhone = guardianPhone.replace(/[\s\-().]/g, '');
-      if (!E164_REGEX.test(cleanGuardianPhone)) {
-        return 'Guardian phone must be in international format (e.g. +85512345678).';
+      if (!isValidPhone(guardianPhone)) {
+        return 'Enter a valid guardian phone number, e.g. 097 424 2347 or +855 97 424 2347.';
       }
     }
 
@@ -116,8 +113,8 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
     setLoading(true);
 
     try {
-      const cleanPhone = phone.trim() ? phone.replace(/[\s\-().]/g, '') : null;
-      const cleanGPhone = guardianPhone.trim() ? guardianPhone.replace(/[\s\-().]/g, '') : null;
+      const cleanPhone = toE164(phone);
+      const cleanGPhone = toE164(guardianPhone);
 
       const payload: StudentCreate = {
         first_name: firstName.trim(),
@@ -302,7 +299,7 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
                   </label>
                   <input
                     type="tel"
-                    placeholder="+85512345678"
+                    placeholder="097 424 2347"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className={inputStyles}
@@ -312,7 +309,7 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
                       color: 'var(--text-primary)',
                     }}
                   />
-                  <span className="text-[10px] text-slate-400">International format (e.g. +855...)</span>
+                  <span className="text-[10px] text-slate-400">Accepts local or +855 format; saves as +855974242347.</span>
                 </div>
               </div>
 
@@ -386,7 +383,7 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
                   </label>
                   <input
                     type="tel"
-                    placeholder="+85512999888"
+                    placeholder="097 424 2347"
                     value={guardianPhone}
                     onChange={(e) => setGuardianPhone(e.target.value)}
                     className={inputStyles}
