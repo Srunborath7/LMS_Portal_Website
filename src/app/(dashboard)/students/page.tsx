@@ -15,6 +15,7 @@ import { StudentStatusBadge } from '@/src/features/students/StudentStatusBadge';
 import { StudentModal } from '@/src/features/students/StudentModal';
 import { StudentDetailModal } from '@/src/features/students/StudentDetailModal';
 import { Spinner } from '@/src/components/ui/Spinner';
+import { toLocalDisplay } from '@/src/shared/utils/phone';
 
 export default function StudentsPage() {
   const { t } = useLanguage();
@@ -627,7 +628,7 @@ export default function StudentsPage() {
                             {student.email}
                           </div>
                           <div className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
-                            {student.phone || '—'}
+                            {toLocalDisplay(student.phone || '—')}
                           </div>
                         </div>
                       </td>
@@ -639,7 +640,7 @@ export default function StudentsPage() {
                             {student.guardian_name || '—'}
                           </div>
                           <div className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
-                            {student.guardian_phone || '—'}
+                            {toLocalDisplay(student.guardian_phone || '—')}
                           </div>
                         </div>
                       </td>

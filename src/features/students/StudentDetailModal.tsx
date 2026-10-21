@@ -3,6 +3,7 @@
 import React from 'react';
 import type { StudentOut } from '@/src/services/students/students.types';
 import { StudentStatusBadge } from './StudentStatusBadge';
+import { toLocalDisplay } from '@/src/shared/utils/phone';
 
 interface StudentDetailModalProps {
   isOpen: boolean;
@@ -155,7 +156,7 @@ export function StudentDetailModal({
                   Phone Number
                 </span>
                 <span className="mt-0.5 font-semibold text-sm block" style={{ color: 'var(--text-primary)' }}>
-                  {student.phone || '—'}
+                  {toLocalDisplay(student.phone || '—')}
                 </span>
               </div>
             </div>
@@ -192,7 +193,7 @@ export function StudentDetailModal({
                     Guardian Phone
                   </span>
                   <span className="mt-0.5 font-semibold text-sm block" style={{ color: 'var(--text-primary)' }}>
-                    {student.guardian_phone || '—'}
+                    {toLocalDisplay(student.guardian_phone || '—')}
                   </span>
                 </div>
               </div>
