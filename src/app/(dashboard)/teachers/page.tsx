@@ -76,9 +76,11 @@ function mergeTeacher(
           ? null
           : String(payload.hourly_rate),
     note: payload.note === undefined ? current.note : payload.note,
+    auth_id: payload.auth_id !== undefined ? payload.auth_id : current.auth_id,
     updated_at: new Date().toISOString(),
   };
 }
+
 
 function createMockTeacher(payload: TeacherCreate): TeacherOut {
   const now = new Date().toISOString();

@@ -11,6 +11,7 @@ import type {
 } from "@/src/services/teachers/teachers.type";
 import { isValidPhone, toE164, toLocalDisplay } from "@/src/shared/utils/phone";
 import { Spinner } from "@/src/components/ui/Spinner";
+import { AccountLinkSelector } from "@/src/features/auth/AccountLinkSelector";
 
 interface TeacherModalProps {
   isOpen: boolean;
@@ -41,7 +42,9 @@ interface TeacherFormValues {
   end_date: string;
   hourly_rate: string;
   note: string;
+  auth_id: string;
 }
+
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -68,6 +71,7 @@ function emptyValues(): TeacherFormValues {
     end_date: "",
     hourly_rate: "",
     note: "",
+    auth_id: "",
   };
 }
 
@@ -100,9 +104,10 @@ export function TeacherModal({
 }: TeacherModalProps) {
   const isEdit = Boolean(teacher);
   const [activeTab, setActiveTab] = useState<
-    "personal" | "professional" | "employment"
+    "personal" | "professional" | "employment" | "account"
   >("personal");
   const [values, setValues] = useState<TeacherFormValues>(emptyValues);
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -135,10 +140,12 @@ export function TeacherModal({
         end_date: teacher.end_date?.slice(0, 10) ?? "",
         hourly_rate: teacher.hourly_rate ?? "",
         note: teacher.note ?? "",
+        auth_id: teacher.auth_id ?? "",
       });
     } else {
       setValues({ ...emptyValues(), hire_date: isOpen ? today() : "" });
     }
+
     setError("");
     setActiveTab("personal");
   }, [teacher, isOpen]);
@@ -185,8 +192,10 @@ export function TeacherModal({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (activeTab !== "employment") {
-      setActiveTab(activeTab === "personal" ? "professional" : "employment");
+    if (activeTab !== "account") {
+      if (activeTab === "personal") setActiveTab("professional");
+      else if (activeTab === "professional") setActiveTab("employment");
+      else setActiveTab("account");
       return;
     }
     const validationError = validate();
@@ -222,8 +231,10 @@ export function TeacherModal({
         end_date: values.end_date || null,
         hourly_rate: values.hourly_rate || null,
         note: values.note.trim() || null,
+        auth_id: values.auth_id.trim() || null,
       };
       await onSave(payload);
+
       onClose();
     } catch (cause) {
       setError(
@@ -312,6 +323,7 @@ export function TeacherModal({
             { id: "personal", label: "1. Personal Info" },
             { id: "professional", label: "2. Professional Info" },
             { id: "employment", label: "3. Employment Info" },
+            { id: "account", label: "4. Link Account" },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -329,6 +341,7 @@ export function TeacherModal({
               {tab.label}
             </button>
           ))}
+
         </nav>
 
         <form
@@ -612,6 +625,31 @@ export function TeacherModal({
             </section>
           )}
 
+          {activeTab === "account" && (
+            <section className="space-y-4">
+              <div
+                className="rounded-xl border p-3.5 text-xs"
+                style={{
+                  borderColor: "var(--border-default)",
+                  background: "var(--bg-muted, rgba(30, 42, 90, 0.04))",
+                }}
+              >
+                <p className="font-semibold text-[var(--text-primary)]">
+                  Teacher Portal Access
+                </p>
+                <p className="mt-0.5 text-[var(--text-secondary)]">
+                  Link an Auth account (with matching email or specified Auth ID) so this teacher can sign in, manage classes, post grades, and communicate with students.
+                </p>
+              </div>
+
+              <AccountLinkSelector
+                selectedAuthId={values.auth_id || null}
+                onChange={(id) => update("auth_id", id || "")}
+                suggestedEmail={values.email}
+              />
+            </section>
+          )}
+
           <footer
             className="flex justify-end gap-2 border-t pt-4"
             style={{ borderColor: "var(--border-default)" }}
@@ -630,11 +668,11 @@ export function TeacherModal({
             {activeTab !== "personal" && (
               <button
                 type="button"
-                onClick={() =>
-                  setActiveTab(
-                    activeTab === "employment" ? "professional" : "personal",
-                  )
-                }
+                onClick={() => {
+                  if (activeTab === "account") setActiveTab("employment");
+                  else if (activeTab === "employment") setActiveTab("professional");
+                  else setActiveTab("personal");
+                }}
                 className="rounded-lg border px-4 py-2 text-sm"
                 style={{
                   borderColor: "var(--border-default)",
@@ -644,9 +682,14 @@ export function TeacherModal({
                 Previous
               </button>
             )}
-            {activeTab !== "employment" ? (
+            {activeTab !== "account" ? (
               <button
-                type="submit"
+                type="button"
+                onClick={() => {
+                  if (activeTab === "personal") setActiveTab("professional");
+                  else if (activeTab === "professional") setActiveTab("employment");
+                  else setActiveTab("account");
+                }}
                 className="rounded-lg px-4 py-2 text-sm font-semibold text-white"
                 style={{ background: "var(--brand-primary)" }}
               >
@@ -664,6 +707,7 @@ export function TeacherModal({
               </button>
             )}
           </footer>
+
         </form>
       </section>
     </div>

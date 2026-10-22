@@ -81,7 +81,9 @@ export const km: Translations = {
     dashboard: 'ផ្ទាំងគ្រប់គ្រង',
     students: 'សិស្ស',
     teachers: 'គ្រូបង្រៀន',
+    auth: 'គណនីផ្ទៀងផ្ទាត់',
     myCourses: 'វគ្គសិក្សារបស់ខ្ញុំ',
+
     assignments: 'កិច្ចការ',
     grades: 'ពិន្ទុ',
     calendar: 'ប្រតិទិន',

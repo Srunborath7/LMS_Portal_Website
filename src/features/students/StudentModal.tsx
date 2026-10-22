@@ -10,6 +10,7 @@ import type {
 } from '@/src/services/students/students.types';
 import { isValidPhone, toE164, toLocalDisplay } from '@/src/shared/utils/phone';
 import { Spinner } from '@/src/components/ui/Spinner';
+import { AccountLinkSelector } from '@/src/features/auth/AccountLinkSelector';
 
 interface StudentModalProps {
   isOpen: boolean;
@@ -21,7 +22,7 @@ interface StudentModalProps {
 export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalProps) {
   const isEdit = Boolean(student);
 
-  const [activeTab, setActiveTab] = useState<'basic' | 'guardian' | 'enrollment'>('basic');
+  const [activeTab, setActiveTab] = useState<'basic' | 'guardian' | 'enrollment' | 'account'>('basic');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,6 +41,8 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
   const [status, setStatus] = useState<StudentStatus>('active');
   const [enrolledAt, setEnrolledAt] = useState('');
   const [note, setNote] = useState('');
+  const [authId, setAuthId] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (student) {
@@ -55,6 +58,7 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
       setStatus(student.status || 'active');
       setEnrolledAt(student.enrolled_at ? student.enrolled_at.substring(0, 10) : '');
       setNote(student.note || '');
+      setAuthId(student.auth_id || null);
     } else {
       setFirstName('');
       setLastName('');
@@ -68,6 +72,7 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
       setStatus('active');
       setEnrolledAt(new Date().toISOString().substring(0, 10));
       setNote('');
+      setAuthId(null);
     }
     setError(null);
     setActiveTab('basic');
@@ -129,9 +134,11 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
         status,
         enrolled_at: enrolledAt || null,
         note: note.trim() || null,
+        auth_id: authId || null,
       };
 
       await onSave(payload);
+
       onClose();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to save student. Please verify all fields.';
@@ -196,6 +203,7 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
             { id: 'basic', label: '1. Basic Info' },
             { id: 'guardian', label: '2. Guardian & Address' },
             { id: 'enrollment', label: '3. Status & Notes' },
+            { id: 'account', label: '4. Link Account' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -213,6 +221,7 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
               {tab.label}
             </button>
           ))}
+
         </div>
 
         {/* Form Body */}
@@ -481,6 +490,30 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
             </div>
           )}
 
+          {/* TAB 4: LINK ACCOUNT */}
+          {activeTab === 'account' && (
+            <div className="space-y-4 animate-fade-in">
+              <div
+                className="rounded-xl border p-3.5 text-xs"
+                style={{
+                  borderColor: 'var(--border-default)',
+                  background: 'var(--bg-muted, rgba(30, 42, 90, 0.04))',
+                }}
+              >
+                <p className="font-semibold text-[var(--text-primary)]">Student Account Integration</p>
+                <p className="mt-0.5 text-[var(--text-secondary)]">
+                  Link an Auth account (with matching email or specified Auth ID) so this student can sign in to access their courses, syllabus, assignments, and grades.
+                </p>
+              </div>
+
+              <AccountLinkSelector
+                selectedAuthId={authId}
+                onChange={setAuthId}
+                suggestedEmail={email}
+              />
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div
             className="flex items-center justify-between border-t pt-4"
@@ -490,9 +523,11 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
               {activeTab !== 'basic' && (
                 <button
                   type="button"
-                  onClick={() =>
-                    setActiveTab(activeTab === 'enrollment' ? 'guardian' : 'basic')
-                  }
+                  onClick={() => {
+                    if (activeTab === 'account') setActiveTab('enrollment');
+                    else if (activeTab === 'enrollment') setActiveTab('guardian');
+                    else setActiveTab('basic');
+                  }}
                   className="rounded-lg border px-3 py-1.5 text-xs font-medium transition hover:bg-[var(--bg-surface-hover)]"
                   style={{
                     borderColor: 'var(--border-default)',
@@ -502,12 +537,14 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
                   Previous
                 </button>
               )}
-              {activeTab !== 'enrollment' && (
+              {activeTab !== 'account' && (
                 <button
                   type="button"
-                  onClick={() =>
-                    setActiveTab(activeTab === 'basic' ? 'guardian' : 'enrollment')
-                  }
+                  onClick={() => {
+                    if (activeTab === 'basic') setActiveTab('guardian');
+                    else if (activeTab === 'guardian') setActiveTab('enrollment');
+                    else setActiveTab('account');
+                  }}
                   className="rounded-lg border px-3 py-1.5 text-xs font-medium transition hover:bg-[var(--bg-surface-hover)]"
                   style={{
                     borderColor: 'var(--border-default)',
@@ -518,6 +555,7 @@ export function StudentModal({ isOpen, onClose, onSave, student }: StudentModalP
                 </button>
               )}
             </div>
+
 
             <div className="flex items-center gap-2">
               <button
