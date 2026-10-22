@@ -19,7 +19,7 @@ export default function DashboardPage() {
       {/* Welcome header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-          {t.dashboard.welcome}, {displayName} 👋
+          {t.dashboard.welcome}, {displayName} 
         </h1>
         <p className="mt-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
           {t.dashboard.overview}

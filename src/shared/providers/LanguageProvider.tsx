@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useEffect, useState, type ReactNode } from 'react';
-import { en, km, type Translations } from '@/src/shared/i18n';
+import { en, km, type Translations } from '@/src/shared/i18n/';
 
 export type Locale = 'en' | 'km';
 
