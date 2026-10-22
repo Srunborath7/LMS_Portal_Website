@@ -79,7 +79,9 @@ export const en = {
     dashboard: 'Dashboard',
     students: 'Students',
     teachers: 'Teachers',
+    auth: 'Auth Accounts',
     myCourses: 'My Courses',
+
     assignments: 'Assignments',
     grades: 'Grades',
     calendar: 'Calendar',

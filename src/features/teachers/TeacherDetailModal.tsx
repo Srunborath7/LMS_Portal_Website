@@ -105,6 +105,67 @@ export function TeacherDetailModal({ isOpen, onClose, teacher, onEdit }: Teacher
             </div>
           </section>
 
+          {/* Linked Auth Account */}
+          <section>
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Portal Login Account</h3>
+            <div
+              className="rounded-xl border p-4 flex items-center justify-between gap-3"
+              style={{
+                borderColor: teacher.auth_id ? 'var(--brand-primary)' : 'var(--border-default)',
+                background: teacher.auth_id ? 'var(--bg-card, rgba(30, 42, 90, 0.04))' : 'var(--bg-muted)',
+              }}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-sm font-semibold"
+                  style={{
+                    background: teacher.auth_id ? 'var(--brand-primary)' : 'var(--border-default)',
+                    color: teacher.auth_id ? '#ffffff' : 'var(--text-secondary)',
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>
+                      {teacher.auth_id ? 'Account Linked' : 'No Account Linked'}
+                    </span>
+                    {teacher.auth_id && (
+                      <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                        Active Link
+                      </span>
+                    )}
+                  </div>
+                  {teacher.auth_id ? (
+                    <p className="mt-0.5 font-mono text-[11px] truncate" style={{ color: 'var(--text-secondary)' }}>
+                      Auth ID: {teacher.auth_id}
+                    </p>
+                  ) : (
+                    <p className="mt-0.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                      Teacher cannot sign in until linked to an Auth account.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onEdit(teacher);
+                }}
+                className="shrink-0 rounded-lg border px-2.5 py-1 text-xs font-medium transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
+                style={{ borderColor: 'var(--border-default)', color: 'var(--text-secondary)' }}
+              >
+                {teacher.auth_id ? 'Change' : 'Link Account'}
+              </button>
+            </div>
+          </section>
+
+
           {teacher.note && (
             <section>
               <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-tertiary)' }}>Administrative note</h3>

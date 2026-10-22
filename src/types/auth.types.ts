@@ -53,3 +53,33 @@ export interface AuthToken {
   /** Optional for deployments that return refresh tokens in the response. */
   refresh_token?: string;
 }
+
+/** Full auth account representation from /api/v1/auths. */
+export interface AuthOut {
+  id: string;
+  username: string;
+  email: string;
+  is_active: boolean;
+  is_verified: boolean;
+  failed_login_attempts: number;
+  locked_until: string | null;
+  last_login_at: string | null;
+  created_at: string;
+}
+
+/** Paginated list of auth accounts. */
+export interface AuthPage {
+  items: AuthOut[];
+  total: number;
+  page: number;
+  size: number;
+}
+
+/** Query filter for listing auth accounts. */
+export interface AuthFilter {
+  q?: string;
+  is_active?: boolean;
+  page?: number;
+  size?: number;
+}
+
