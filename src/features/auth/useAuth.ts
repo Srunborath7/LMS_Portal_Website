@@ -1,53 +1,41 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { authApi } from '@/src/services/auth';
-import type { AuthCreate, AuthLogin, AuthRead, AuthUser } from '@/src/types/auth.types';
-import { clearSession, getAccessToken, userFromToken } from '@/src/lib/session';
-
-function mapUser(user: AuthRead): AuthUser {
-  return {
-    id: user.id,
-    name: user.username,
-    email: user.email,
-    role: user.role,
-    permissions: [],
-  };
-}
+import type { AuthCreate, AuthLogin } from '@/src/types/auth.types';
+import { authStore, useAuthStore } from '@/src/store';
 
 export function useAuth() {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const isStoreLoading = useAuthStore((s) => s.isLoading);
+  const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const token = getAccessToken();
-    if (!token) return;
-    const cachedUser = userFromToken(token);
-    if (cachedUser) setUser(cachedUser);
-    authApi.me().then((account) => setUser(mapUser(account))).catch(() => {
-      clearSession();
-      setUser(null);
-    });
-  }, []);
+  const loading = actionLoading || isStoreLoading;
 
   const login = useCallback(async (payload: AuthLogin) => {
-    setLoading(true);
+    setActionLoading(true);
     setError('');
     try {
       const session = await authApi.login(payload);
-      setUser(mapUser(session.user));
+      authStore.setSession(session.access_token, session.refresh_token, {
+        id: session.user.id,
+        name: session.user.username,
+        email: session.user.email,
+        role: session.user.role,
+        permissions: [],
+      });
       return true;
     } catch {
       setError('Unable to sign in. Check your details and try again.');
       return false;
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   }, []);
 
   const register = useCallback(async (payload: AuthCreate) => {
-    setLoading(true);
+    setActionLoading(true);
     setError('');
     try {
       await authApi.register(payload);
@@ -56,13 +44,16 @@ export function useAuth() {
       setError('Unable to create your account. Please try again.');
       return false;
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   }, []);
 
   const logout = useCallback(async () => {
-    await authApi.logout();
-    setUser(null);
+    try {
+      await authApi.logout();
+    } finally {
+      authStore.clearAuth();
+    }
   }, []);
 
   const clearError = useCallback(() => setError(''), []);
