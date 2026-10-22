@@ -9,5 +9,8 @@ export type {
   AuthOut,
   AuthPage,
   AuthFilter,
+  PasswordResetRequest,
+  PasswordResetConfirm,
 } from '@/src/types/auth.types';
+
 
