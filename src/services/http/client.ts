@@ -60,10 +60,19 @@ async function request<T>(method: string, path: string, options?: RequestInit): 
     ...options,
   });
 
+  const shouldSkipRefresh = [
+    '/auths/login',
+    '/auths/register',
+    '/auths/forgot-password',
+    '/auths/reset-password',
+    AUTH_REFRESH_PATH,
+    '/auths/logout',
+  ].some((authPath) => path === authPath || path.startsWith(`${authPath}?`));
+
   let response = await fetchWithToken(getAccessToken());
-  const shouldSkipRefresh = ['/auths/login', '/auths/register', AUTH_REFRESH_PATH, '/auths/logout']
-    .some((authPath) => path === authPath || path.startsWith(`${authPath}?`));
+
   if (response.status === 401 && !shouldSkipRefresh) {
+
     const refreshedToken = await refreshAccessToken();
     if (refreshedToken) {
       response = await fetchWithToken(refreshedToken);
@@ -80,6 +89,7 @@ async function request<T>(method: string, path: string, options?: RequestInit): 
       code?: string | number;
       message?: string;
       msg?: string;
+      detail?: string;
       details?: Record<string, string[]>;
     } = {};
     try {
@@ -90,15 +100,22 @@ async function request<T>(method: string, path: string, options?: RequestInit): 
     const error = new ApiError(
       response.status,
       String(errorBody.code ?? 'UNKNOWN_ERROR'),
-      errorBody.message ?? errorBody.msg ?? `HTTP ${response.status}`,
+      errorBody.message ?? errorBody.msg ?? errorBody.detail ?? `HTTP ${response.status}`,
       errorBody.details
     );
+
     logger.error('API request failed', { url, status: response.status, code: error.code });
     throw error;
   }
 
+  if (response.status === 204 || response.headers.get('content-length') === '0') {
+    return null as unknown as T;
+  }
+
   return response.json() as Promise<T>;
 }
+
+
 
 export const httpClient = {
   get:    <T>(path: string, options?: RequestInit) => request<T>('GET', path, options),

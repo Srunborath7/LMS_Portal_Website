@@ -8,7 +8,18 @@ import type { NextRequest } from 'next/server';
  * be extended by hand for every new module, and each omission silently exposed
  * a route. Defaulting to "protected" means a forgotten entry fails closed.
  */
-const PUBLIC_PATHS = ['/', '/auth/login', '/auth/register', '/auth/forgot-password'];
+const PUBLIC_PATHS = [
+  '/',
+  '/auth/login',
+  '/auth/register',
+  '/auth/forgot-password',
+  '/auth/forget-password',
+  '/auth/reset-password',
+  '/forgot-password',
+  '/forget-password',
+  '/reset-password',
+];
+
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

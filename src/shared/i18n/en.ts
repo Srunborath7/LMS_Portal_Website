@@ -61,6 +61,26 @@ export const en = {
     strong: 'Strong',
     strengthHint: 'Use upper and lower case, a number and a symbol.',
 
+    // Forgot & Reset Password
+    forgotHeading: 'Reset your password',
+    forgotSubtext: 'Enter your email address and we will send you instructions to reset your password.',
+    sendResetLink: 'Send reset link',
+    sendingResetLink: 'Sending reset link…',
+    resetEmailSentTitle: 'Check your email',
+    resetEmailSentText: 'We sent password reset instructions to your email address.',
+    resetHeading: 'Choose a new password',
+    resetSubtext: 'Must be at least 8 characters long.',
+    resetButton: 'Reset password',
+    resettingButton: 'Resetting password…',
+    resetSuccessTitle: 'Password reset successful',
+    resetSuccessText: 'Your password has been changed. You can now sign in with your new password.',
+    backToSignIn: 'Back to sign in',
+    token: 'Reset token',
+    tokenPlaceholder: 'Paste your reset token from email',
+    newPassword: 'New password',
+    confirmNewPassword: 'Confirm new password',
+
+
     // Brand panel
     loginHeading: 'Pick up where you left off.',
     loginSubtext: 'Your courses, assignments and grades are waiting in one place.',

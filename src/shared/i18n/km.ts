@@ -63,6 +63,26 @@ export const km: Translations = {
     strong: 'រឹងមាំ',
     strengthHint: 'ប្រើអក្សរធំ អក្សរតូច លេខ និងនិមិត្តសញ្ញា។',
 
+    // Forgot & Reset Password
+    forgotHeading: 'កំណត់ពាក្យសម្ងាត់របស់អ្នកឡើងវិញ',
+    forgotSubtext: 'បញ្ចូលអាសយដ្ឋានអ៊ីមែលរបស់អ្នក ហើយយើងនឹងផ្ញើតំណដើម្បីកំណត់ពាក្យសម្ងាត់ឡើងវិញ។',
+    sendResetLink: 'ផ្ញើតំណកំណត់ឡើងវិញ',
+    sendingResetLink: 'កំពុងផ្ញើតំណ…',
+    resetEmailSentTitle: 'សូមពិនិត្យអ៊ីមែលរបស់អ្នក',
+    resetEmailSentText: 'យើងបានផ្ញើសេចក្តីណែនាំកំណត់ពាក្យសម្ងាត់ឡើងវិញទៅកាន់អ៊ីមែលរបស់អ្នក។',
+    resetHeading: 'ជ្រើសរើសពាក្យសម្ងាត់ថ្មី',
+    resetSubtext: 'ត្រូវមានយ៉ាងហោចណាស់ ៨ តួអក្សរ។',
+    resetButton: 'កំណត់ពាក្យសម្ងាត់ឡើងវិញ',
+    resettingButton: 'កំពុងកំណត់ឡើងវិញ…',
+    resetSuccessTitle: 'កំណត់ពាក្យសម្ងាត់បានជោគជ័យ',
+    resetSuccessText: 'ពាក្យសម្ងាត់របស់អ្នកត្រូវបានផ្លាស់ប្តូរដោយជោគជ័យ។ ឥឡូវអ្នកអាចចូលប្រើប្រាស់បានហើយ។',
+    backToSignIn: 'ត្រឡប់ទៅការចូលប្រើ',
+    token: 'កូដសម្ងាត់កំណត់ឡើងវិញ',
+    tokenPlaceholder: 'បិទភ្ជាប់កូដកំណត់ឡើងវិញពីអ៊ីមែល',
+    newPassword: 'ពាក្យសម្ងាត់ថ្មី',
+    confirmNewPassword: 'បញ្ជាក់ពាក្យសម្ងាត់ថ្មី',
+
+
     // Brand panel
     loginHeading: 'បន្តពីកន្លែងដែលអ្នកឈប់។',
     loginSubtext: 'វគ្គសិក្សា កិច្ចការ និងពិន្ទុរបស់អ្នកកំពុងរង់ចាំ។',
