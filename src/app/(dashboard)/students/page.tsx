@@ -139,6 +139,7 @@ export default function StudentsPage() {
               status: payload.status ?? s.status,
               enrolled_at: payload.enrolled_at === undefined ? s.enrolled_at : payload.enrolled_at,
               note: payload.note === undefined ? s.note : payload.note,
+              auth_id: payload.auth_id !== undefined ? payload.auth_id : s.auth_id,
               updated_at: new Date().toISOString(),
             };
           }));
@@ -153,8 +154,9 @@ export default function StudentsPage() {
           const newStudent: StudentOut = {
             id: `temp-${Date.now()}`,
             student_code: `STU-2024-${String(Math.floor(Math.random() * 900) + 100)}`,
-            auth_id: null,
+            auth_id: (payload as StudentCreate).auth_id ?? null,
             first_name: payload.first_name || '',
+
             last_name: payload.last_name || '',
             full_name: `${payload.first_name} ${payload.last_name}`.trim(),
             date_of_birth: payload.date_of_birth || null,

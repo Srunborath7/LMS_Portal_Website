@@ -37,7 +37,9 @@ export interface StudentUpdate {
   status?: StudentStatus | null;
   enrolled_at?: string | null;
   note?: string | null;
+  auth_id?: string | null;
 }
+
 
 export interface StudentOut {
   id: string;
