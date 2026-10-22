@@ -2,9 +2,11 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useLanguage } from '@/src/shared/hooks/useLanguage';
 import { useAuth } from '@/src/features/auth/useAuth';
 import { Spinner } from '@/src/components/ui/Spinner';
+
 
 export function LoginForm() {
   const router = useRouter();
@@ -131,9 +133,10 @@ export function LoginForm() {
             <label htmlFor="login-password" className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
               {t.auth.password}
             </label>
-            <a href="/forgot-password" className="text-sm font-medium transition-colors hover:underline" style={{ color: 'var(--brand-primary)' }}>
+            <Link href="/auth/forgot-password" className="text-sm font-medium transition-colors hover:underline" style={{ color: 'var(--brand-primary)' }}>
               {t.auth.forgotPassword}
-            </a>
+            </Link>
+
           </div>
           <div className="relative">
             <input
