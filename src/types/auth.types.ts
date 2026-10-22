@@ -83,3 +83,15 @@ export interface AuthFilter {
   size?: number;
 }
 
+/** Request payload for requesting a password reset token. */
+export interface PasswordResetRequest {
+  email: string;
+}
+
+/** Request payload for confirming password reset with token. */
+export interface PasswordResetConfirm {
+  token: string;
+  new_password: string;
+}
+
+

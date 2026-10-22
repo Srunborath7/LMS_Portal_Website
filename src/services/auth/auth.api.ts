@@ -1,6 +1,16 @@
 import { httpClient } from "@/src/services/http/client";
 import { clearSession, getRefreshToken, saveSession } from "@/src/lib/session";
-import type { AuthCreate, AuthFilter, AuthLogin, AuthOut, AuthPage, AuthRead, AuthToken } from "./type";
+import type {
+  AuthCreate,
+  AuthFilter,
+  AuthLogin,
+  AuthOut,
+  AuthPage,
+  AuthRead,
+  AuthToken,
+  PasswordResetConfirm,
+  PasswordResetRequest,
+} from "./type";
 
 const AUTH_PATH = "/auths";
 
@@ -45,6 +55,14 @@ export const authApi = {
     return httpClient.get<AuthOut>(`${AUTH_PATH}/${id}`);
   },
 
+  async forgotPassword(payload: PasswordResetRequest): Promise<{ message?: string }> {
+    return httpClient.post<{ message?: string }>(`${AUTH_PATH}/forgot-password`, payload);
+  },
+
+  async resetPassword(payload: PasswordResetConfirm): Promise<void> {
+    return httpClient.post<void>(`${AUTH_PATH}/reset-password`, payload);
+  },
+
   async refresh(): Promise<AuthToken> {
     const refreshToken = getRefreshToken();
     const session = await httpClient.post<AuthToken>(`${AUTH_PATH}/refresh`, {
@@ -62,4 +80,5 @@ export const authApi = {
     }
   },
 };
+
 
