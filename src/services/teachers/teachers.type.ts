@@ -59,7 +59,9 @@ export interface TeacherUpdate {
   end_date?: string | null;
   hourly_rate?: number | string | null;
   note?: string | null;
+  auth_id?: string | null;
 }
+
 
 /** Full view for staff/admin. */
 export interface TeacherOut {
